@@ -1,5 +1,7 @@
 # Import python packages
 import streamlit as st
+
+import requests
 #from snowflake.snowpark.context import get_active_session
 #streamlit.title('My Parents New Healthy Diner')
 # Write directly to the app
@@ -26,22 +28,11 @@ my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT
 
 ingredients_list = st.multiselect('Choose up to 5 ingredients:',my_dataframe)
 if ingredients_list:
-    #st.write(ingredients_list)
-    #st.text(ingredients_list)
     ingredients_string=''
     for fruit_chosen in ingredients_list:
         ingredients_string+=fruit_chosen + ' '
-    st.write(ingredients_string)
-    my_insert_stmt =""" insert into smoothies.public.orders(ingredients,name_on_order) 
-    values ('"""+ ingredients_string +"""','"""+name_on_order+"""')"""
-    st.write(my_insert_stmt)
-    time_to_insert = st.button('Submit Order')
-    if time_to_insert:
-        session.sql(my_insert_stmt).collect()
-        st.success('Your Smoothies is ordered!')
+        smoothiefroot_response = requests.get("https://www.fruityvice.com/api/fruit/watermelon")
+        sf_df= st.dataframe(data=smoothiefroot_response.json(),use_container_width=True)
 
-import requests
-smoothiefroot_response = requests.get("https://www.fruityvice.com/api/fruit/watermelon")
-#st.text(smoothiefroot_response.json())       
-sf_df= st.dataframe(data=smoothiefroot_response.json(),use_container_width=True)
+
                     
